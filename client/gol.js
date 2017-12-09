@@ -79,19 +79,31 @@ var createSelectedCommunity= function(cell) {
 			return [cell];
 		case "glider" :
 			return createGliderCommunity(cell);
+		case "flower" :
+			return createFlowerCommunity(cell);
 
 	}
 }
 
 var createGliderCommunity = function(cell) {
-	let x = cell.x;
-	let y = cell.y;
-	var northWest = golModel.grid[x - 1][y - 1];
-	var north = golModel.grid[x][y - 1];
-	var northEast = golModel.grid[x + 1][y - 1];
-	var west = golModel.grid[x - 1][y];
-	var south = golModel.grid[x][y + 1];
+	var northWest = golModel.getNorthWest(cell);
+	var north = golModel.getNorth(cell);
+	var northEast = golModel.getNorthEast(cell);
+	var west = golModel.getWest(cell);
+	var south = golModel.getSouth(cell);
 	var cells = [northWest, north, northEast, west, south];
+	cells.forEach(cell => {
+		cell.isAlive = true;
+	});
+	return cells;
+}
+
+var createFlowerCommunity = function(cell) {
+	var north = golModel.getNorth(cell);
+	var west = golModel.getWest(cell);
+	var south = golModel.getSouth(cell);
+	var east = golModel.getEast(cell);
+	var cells = [north, west, south, east, cell];
 	cells.forEach(cell => {
 		cell.isAlive = true;
 	});
@@ -274,6 +286,38 @@ class GolModel {
 		Object.keys(this.liveCells).forEach(key => {
 			console.log(this.liveCells[key]);
 		});
+	}
+
+	getNorth(cell) {
+		return this.grid[cell.x][cell.y - 1];
+	}
+
+	getNorthWest(cell) {
+		return this.grid[cell.x - 1][cell.y - 1];
+	}
+
+	getNorthEast(cell) {
+		return this.grid[cell.x +1][cell.y - 1];
+	}
+
+	getWest(cell) {
+		return this.grid[cell.x - 1][cell.y];
+	}
+
+	getSouthWest(cell) {
+		return this.grid[cell.x - 1][cell.y + 1];
+	}
+
+	getSouth(cell) {
+		return this.grid[cell.x][cell.y + 1];
+	}
+
+	getSouthEast(cell) {
+		return this.grid[cell.x + 1][cell.y + 1];
+	}
+
+	getEast(cell) {
+		return this.grid[cell.x + 1][cell.y];
 	}
 }
 
