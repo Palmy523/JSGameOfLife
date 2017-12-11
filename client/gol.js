@@ -4,6 +4,9 @@ var golModel;
 var loopInterval;
 var communitySelected;
 
+/**
+ * Initialize
+ */
 window.onload = function() {
 	canvas = document.getElementById("golCanvas");
 	canvas.width = 600;
@@ -14,6 +17,9 @@ window.onload = function() {
 	communitySelected = document.getElementById("singleCommunityType");
 }
 
+/**
+ * Creates a new grid based on the user inputs
+ */
 var createGrid = function() {
 	var gridSizeInput = document.getElementById("gridSizeInput");
 	
@@ -29,6 +35,9 @@ var createGrid = function() {
 	drawGrid(golModel);
 }
 
+/**
+ * Draw a grid from the global golModel.
+ */
 var drawGrid = function(golModel) {
 	var grid = golModel.grid;
 	for (let i = 0; i < grid.length; i++) {
@@ -38,6 +47,9 @@ var drawGrid = function(golModel) {
 	}
 }
 
+/**
+ * Draws a cell on the grid with the specified color.
+ */ 
 var drawCell = function(cell, color) {
 	if (!color) {
 		var fill = cell.isAlive ? "red" : "green";
@@ -52,6 +64,9 @@ var drawCell = function(cell, color) {
 	context.strokeRect(cell.offsetX + 1, cell.offsetY + 1, cell.height - 2, cell.width - 2);
 }
 
+/**
+ * Toggles cell state based on the user selection in the client.
+ */
 var toggleCell = function(event) {
 	if (golModel) {
 		var x = event.pageX - canvas.offsetLeft;
@@ -65,12 +80,18 @@ var toggleCell = function(event) {
 	}
 }
 
+/**
+ * Sets the community type selected based on user selection.
+ */
 var setCommunityType = function(event) {
 	communitySelected.classList.remove("icon-selected");
 	communitySelected = event.currentTarget;
 	communitySelected.classList.add("icon-selected");
 }
 
+/**
+ * Creats a custom community based on user selection in the client.
+ */ 
 var createSelectedCommunity= function(cell) {
 	var communityType = communitySelected.attributes["name"];
 	switch(communityType.nodeValue) {
@@ -85,6 +106,9 @@ var createSelectedCommunity= function(cell) {
 	}
 }
 
+/**
+ * return the cells required to draw for a glider community selection.
+ */
 var createGliderCommunity = function(cell) {
 	var northWest = golModel.getNorthWest(cell);
 	var north = golModel.getNorth(cell);
@@ -98,6 +122,9 @@ var createGliderCommunity = function(cell) {
 	return cells;
 }
 
+/**
+ * return the cells required to draw for a flower community selection.
+ */
 var createFlowerCommunity = function(cell) {
 	var north = golModel.getNorth(cell);
 	var west = golModel.getWest(cell);
@@ -110,6 +137,9 @@ var createFlowerCommunity = function(cell) {
 	return cells;
 }
 
+/**
+ * Canvas redraw logic
+ */
 var redraw = function(event) {
 	if (golModel.isActive) {
 		var updatedCells = golModel.update();
@@ -122,6 +152,9 @@ var redraw = function(event) {
 	}
 }
 
+/**
+ * Start or continue running the gol.
+ */
 var run = function(event) {
 	if (golModel !== null && !loopInterval) {
 		golModel.isActive = true;
@@ -129,12 +162,18 @@ var run = function(event) {
 	}
 }
 
+/**
+ * Stop the gol
+ */
 var stop = function(event) {
 	golModel.isActive = false;
 	clearInterval(loopInterval);
 	loopInterval = null;
 }
 
+/**
+ * Get the user interval selection.
+ */ 
 var getInterval = function() {
 	var value = document.getElementById("intervalInput").value;
 	if (!value || isNaN(value) || value < 1) {
@@ -143,8 +182,14 @@ var getInterval = function() {
 	return value;
 }
 
+/**
+ * Class structure that represents the Game of Life model.
+ */
 class GolModel {
 
+	/**
+	 * Constructor
+	 */
 	constructor(cellSize) {
 		this.liveCells = [];
 		this.cellSize = cellSize;
@@ -153,6 +198,10 @@ class GolModel {
 		this.xCount;
 	}
 
+	/**
+	 * Create a grid model based on the element passed in by height/width
+	 * determines number of cells based on height width and specified cell size. 
+	 */
 	createGrid(canvas) {
 		this.grid = [];
 
@@ -169,15 +218,23 @@ class GolModel {
 		}
 	}
 
-	//Calculate the number of vertical cells
+	/**
+	 * Calculate the number of vertical cells.
+	 */ 
 	calculateYCount(height) {
 		return height / this.cellSize;
 	}
 
+	/**
+	 * Calculate the number of horizontal cells.
+	 */ 
 	calculateXCount(width) {
 		return width / this.cellSize;
 	}
 
+	/**
+	 * Calculate the cell offsets based on cell size and coordinates
+	 */
 	calculateCellOffset(xCoord, yCoord) {
 		var offsets = {};
 		offsets.x = xCoord * this.cellSize;
@@ -185,12 +242,19 @@ class GolModel {
 		return offsets;
 	}
 
+	/**
+	 * Gets a cell based on the offset in the element the grid is displayed in.
+	 */
 	getCell(offsetX, offsetY) {
 		var xIndex = Math.floor(offsetX / this.cellSize);
 		var yIndex = Math.floor(offsetY / this.cellSize);
 		return this.grid[xIndex][yIndex];
 	}
 
+	/**
+	 * Updates the live cell listing for the specified cell 
+	 * based on cell isAlive state.
+	 */
 	updateActiveList(cell) {
 		var key = this.getKey(cell);
 		var liveCell = this.liveCells[key];
@@ -203,11 +267,19 @@ class GolModel {
 		}
 	}
 
+	/**
+	 * Sets the state of a cell and updates the active listing.
+	 */
 	setAliveState(cell, isAlive) {
 		cell.isAlive = isAlive;
 		this.updateActiveList(cell);
 	}
 
+	/**
+	 * Processes a single update of the Game of Life and returns the 
+	 * affected cells. Updates the model with the state of all cells
+	 * affected.
+	 */
 	update() {
 		var liveHitMap = [];
 		
@@ -234,6 +306,9 @@ class GolModel {
 		return cellsToUpdate;
 	}
 
+	/**
+	 * Determine the number of live cells for each cell and adjacent cells in the liveHitMap
+	 */
 	determineLifeHits(cell, liveHitMap) {
 
 		for (let i = cell.x - 1; i <= cell.x + 1; i++) {
@@ -278,49 +353,82 @@ class GolModel {
 		}
 	}
 
+	/**
+	 * Gets the key for the specified cell for use in a map.
+	 */
 	getKey(cell) {
 		return cell.x + ":" + cell.y;
 	}
 
+	/**
+	 * Print all live cells to the console.
+	 */
 	printLiveCells() {
 		Object.keys(this.liveCells).forEach(key => {
 			console.log(this.liveCells[key]);
 		});
 	}
 
+	/**
+	 * Gets the cell north of the specified cell
+	 */
 	getNorth(cell) {
 		return this.grid[cell.x][cell.y - 1];
 	}
 
+	/**
+	 * Gets the cell North West of the specified cell
+	 */
 	getNorthWest(cell) {
 		return this.grid[cell.x - 1][cell.y - 1];
 	}
 
+	/**
+	 * Gets the cell North East of the specified cell
+	 */
 	getNorthEast(cell) {
 		return this.grid[cell.x +1][cell.y - 1];
 	}
 
+	/**
+	 * Gets the cell West of the specified cell
+	 */
 	getWest(cell) {
 		return this.grid[cell.x - 1][cell.y];
 	}
 
+	/**
+	 * Gets the cell South West of the specified cell
+	 */
 	getSouthWest(cell) {
 		return this.grid[cell.x - 1][cell.y + 1];
 	}
 
+	/**
+	 * Gets the cell South of the specified cell
+	 */
 	getSouth(cell) {
 		return this.grid[cell.x][cell.y + 1];
 	}
 
+	/**
+	 * Gets the cell South East of the specified cell
+	 */
 	getSouthEast(cell) {
 		return this.grid[cell.x + 1][cell.y + 1];
 	}
 
+	/**
+	 * Gets the cell East of the specified cell.
+	 */
 	getEast(cell) {
 		return this.grid[cell.x + 1][cell.y];
 	}
 }
 
+/**
+ * Class that represents a single cell in a golModel
+ */
 class golCell {
 
 	constructor(x, y, offsetX, offsetY, height, width) {
