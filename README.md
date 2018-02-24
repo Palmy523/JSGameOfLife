@@ -5,7 +5,7 @@ Run locally:
 
 Install node dependencies.
 
-```npm install``
+```npm install```
 
 Run
 
