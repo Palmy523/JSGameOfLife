@@ -1,7 +1,5 @@
 # JSGameOfLife
-Conways Game Of LIfe
-
-Run locally: 
+## Conways Game Of Life
 
 Install node dependencies.
 
