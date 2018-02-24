@@ -1,0 +1,29 @@
+{
+  "name": "jsgameoflife",
+  "version": "1.0.0",
+  "description": "Game of Life App",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Palmy523/JSGameOfLife.git"
+  },
+  "keywords": [
+    "game",
+    "of",
+    "life",
+    "conway"
+  ],
+  "author": "David Palmiter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Palmy523/JSGameOfLife/issues"
+  },
+  "homepage": "https://github.com/Palmy523/JSGameOfLife#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
