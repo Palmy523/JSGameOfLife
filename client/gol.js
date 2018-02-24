@@ -3,7 +3,7 @@ var context;
 var golModel;
 var loopInterval;
 var communitySelected;
-
+var ratio;
 /**
  * Initialize
  */
@@ -150,6 +150,7 @@ var redraw = function(event) {
 		clearInterval(loopInterval);
 		loopInterval = null;
 	}
+	document.getElementById("ratio").innerHTML = golModel.ratio;
 }
 
 /**
@@ -196,6 +197,8 @@ class GolModel {
 		this.isActive = false;
 		this.yCount;
 		this.xCount;
+		this.liveCellCount = 0;
+		this.ratio = 0;
 	}
 
 	/**
@@ -260,10 +263,12 @@ class GolModel {
 		var liveCell = this.liveCells[key];
 		if (!liveCell && cell.isAlive) {
 			this.liveCells[key] = cell;
+			this.liveCellCount++;
 		} 
 
 		if (cell && !cell.isAlive) {
 			delete this.liveCells[key];
+			this.liveCellCount--;
 		}
 	}
 
@@ -292,7 +297,7 @@ class GolModel {
 			var cell = liveHitMap[key];
 			if (cell.isAlive) {
 				if (cell.hits < 2 || cell.hits > 3) {
-					this.setAliveState(cell, false);					
+					this.setAliveState(cell, false);
 					cellsToUpdate.push(cell);
 				}
 			} else {
@@ -303,6 +308,7 @@ class GolModel {
 			}
 			cell.hits = 0;
 		});
+		this.updateRatio();
 		return cellsToUpdate;
 	}
 
@@ -351,6 +357,10 @@ class GolModel {
 				}
 			}
 		}
+	}
+	
+	updateRatio() {
+		this.ratio = this.liveCellCount / (this.xCount * this.yCount);
 	}
 
 	/**
