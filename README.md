@@ -1,10 +1,12 @@
-### JS Game Of Life
+# JS Game Of Life
+
+## Overview
 
 Simulate Conway's game of life in an interactive JavaScript canvas. Create custom communities. Change update interval and cell size. 
 
 Live Demo: https://game-of-life-196216.appspot.com/gol.html
 
-#### Local deploy
+## Deploy locally
 
 ```npm install```
 
