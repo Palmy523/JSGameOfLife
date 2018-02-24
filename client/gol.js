@@ -4,6 +4,9 @@ var golModel;
 var loopInterval;
 var communitySelected;
 var ratio;
+var mouseIsDrawing;
+var mouseDrawX;
+var mouseDrawY;
 /**
  * Initialize
  */
@@ -13,6 +16,9 @@ window.onload = function() {
 	canvas.height = 600;
 	context = canvas.getContext('2d');
 	canvas.onclick = toggleCell;
+	canvas.addEventListener('mousedown', canvasMouseDown);
+	canvas.addEventListener('mouseup', canvasMouseUp);
+	canvas.addEventListener('mousemove', canvasMouseMove);
 	createGrid();
 	communitySelected = document.getElementById("singleCommunityType");
 }
@@ -77,6 +83,31 @@ var toggleCell = function(event) {
 			golModel.updateActiveList(cell);
 			drawCell(cell);
 		});
+	}
+}
+
+var canvasMouseDown = function(event) {
+	mouseIsDrawing = true;
+}
+
+var canvasMouseUp = function(event) {
+	mouseIsDrawing = false;
+}
+
+var canvasMouseMove = function(event) {
+	if (mouseIsDrawing) {
+		if (mouseDrawX && mouseDrawY) {
+			if (Math.abs(mouseDrawX - event.pageX) > golModel.cellSize 
+				|| Math.abs(mouseDrawY - event.pageY) > golModel.cellSize) {
+				mouseDrawX = event.pageX;
+				mouseDrawY = event.pageY;
+				toggleCell(event);
+			}
+		} else {
+			mouseDrawX = event.pageX;
+			mouseDrawY = event.pageY;
+			toggleCell(event);
+		}
 	}
 }
 
