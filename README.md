@@ -6,11 +6,7 @@ Live Demo: https://game-of-life-196216.appspot.com/gol.html
 
 #### Local deploy
 
-Install node dependencies.
-
 ```npm install```
-
-Run
 
 ```npm start```
 
